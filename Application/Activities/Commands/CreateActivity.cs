@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Persistence;
@@ -10,23 +11,26 @@ public class CreateActivity
 
     public class Command : IRequest<string>
     {
-        public required Activity Activity { get; set; }
+        public required CreateActivity ActivityDTO { get; set; }
     }
 
     public class Handler : IRequestHandler<Command, string>
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public Handler(AppDbContext context)
+        public Handler(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<string> Handle(Command request, CancellationToken cancellationToken)
         {
-            _context.Activities.Add(request.Activity);
+            var activity = _mapper.Map<Activity>(request.ActivityDTO);
+            _context.Activities.Add(activity);
             await _context.SaveChangesAsync(cancellationToken);
-            return request.Activity.Id;
+            return activity.Id;
         }
 
 

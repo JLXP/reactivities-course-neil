@@ -13,9 +13,9 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities(CancellationToken ct)
+        public async Task<ActionResult<List<Activity>>> GetActivities()
         {
-            return await Mediator.Send(new GetActivityList.Query(), ct);
+            return await Mediator.Send(new GetActivityList.Query());
         }
 
         [HttpGet("{id}")]
@@ -26,9 +26,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> CreateActivity(Activity activity)
+        public async Task<ActionResult<string>> CreateActivity(CreateActivity activityDTO)
         {
-            return await Mediator.Send(new CreateActivity.Command { Activity = activity });
+            return await Mediator.Send(new CreateActivity.Command { ActivityDTO = activityDTO });
         }
 
         [HttpPut]
