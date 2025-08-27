@@ -15,11 +15,11 @@ namespace API.Controllers
             ?? throw new InvalidOperationException("Mediator service not found in the request context.");
 
 
-        protected ActionResult<T> HandleResult<T>(Result<T> result)
+        protected ActionResult HandleResult<T>(Result<T> result)
         {
             if (!result.IsSuccess && result.Code == 404) return NotFound();
 
-            if (result.IsSuccess && result.Value != null) return result.Value;
+            if (result.IsSuccess && result.Value != null) return Ok(result.Value);
 
             return BadRequest(result.Error);
         }
