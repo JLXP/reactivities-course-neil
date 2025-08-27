@@ -1,5 +1,7 @@
 using Application.Activities.Commands;
+using Application.Activities.DTO;
 using Application.Activities.Queries;
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -21,12 +23,12 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Activity>> GetActvityDetail(string id)
         {
-            return await Mediator.Send(new GetActivityDetails.Query { Id = id });
+            return HandleResult(await Mediator.Send(new GetActivityDetails.Query { Id = id }));
 
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> CreateActivity(CreateActivity activityDTO)
+        public async Task<ActionResult<string>> CreateActivity(CreateActivityDTO activityDTO)
         {
             return await Mediator.Send(new CreateActivity.Command { ActivityDTO = activityDTO });
         }
