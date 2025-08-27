@@ -1,3 +1,4 @@
+using API.Middleware;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
 using Application.Core;
@@ -23,6 +24,7 @@ builder.Services.AddMediatR(x =>
 });
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
+builder.Services.AddTransient<ExceptionMiddleware>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 
@@ -35,7 +37,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:3000", "http://localhost:3000"));
 
 app.MapControllers();
