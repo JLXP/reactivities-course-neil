@@ -1,4 +1,5 @@
 using System;
+using Application.Activities.DTO;
 using Application.Core;
 using AutoMapper;
 using Domain;
@@ -12,7 +13,7 @@ public class EditActivity
 
     public class Command : IRequest<Result<Unit>>
     {
-        public required Activity Activity { get; set; }
+        public required EditActivityDto ActivityDTO { get; set; }
     }
 
 
@@ -30,11 +31,11 @@ public class EditActivity
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var activity = await _context.Activities.FindAsync([request.Activity.Id], cancellationToken) ?? throw new Exception("Activity not found");
+            var activity = await _context.Activities.FindAsync([request.ActivityDTO.Id], cancellationToken) ?? throw new Exception("Activity not found");
 
             if (activity == null) Result<Unit>.Failure("Activity not found", 404);
 
-            _mapper.Map(request.Activity, activity);
+            _mapper.Map(request.ActivityDTO, activity);
 
             var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 

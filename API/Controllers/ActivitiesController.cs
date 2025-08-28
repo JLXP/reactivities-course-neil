@@ -34,9 +34,9 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditActivity(Activity activity)
+        public async Task<IActionResult> EditActivity(EditActivityDto activity)
         {
-            return HandleResult(await Mediator.Send(new EditActivity.Command { Activity = activity }));
+            return HandleResult(await Mediator.Send(new EditActivity.Command { ActivityDTO = activity }));
         }
 
 

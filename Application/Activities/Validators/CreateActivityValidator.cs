@@ -1,15 +1,15 @@
-using System;
 using Application.Activities.Commands;
+using Application.Activities.DTO;
 using FluentValidation;
 
 namespace Application.Activities.Validators;
 
-public class CreateActivityValidator : AbstractValidator<CreateActivity.Command>
+public class CreateActivityValidator : BaseActivityValidator<CreateActivity.Command, CreateActivityDTO>
 {
-    
-    public CreateActivityValidator()
+
+    public CreateActivityValidator(): base(x => x.ActivityDTO)
     {
-        RuleFor(x => x.ActivityDTO.Title).NotEmpty().WithMessage("Title is required");
+               
     }
 
 }
