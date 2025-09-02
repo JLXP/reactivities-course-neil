@@ -47,10 +47,12 @@ app.UseAuthorization();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:3000", "http://localhost:3000"));
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 
 app.MapControllers();
+app.MapGroup("api").MapIdentityApi<User>();
 /*
 
 CreateScope() → es como decir:
@@ -65,8 +67,9 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<AppDbContext>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
     await context.Database.MigrateAsync();
-    await DbInitializer.SeedData(context);
+    await DbInitializer.SeedData(context, userManager);
 }
 catch (Exception ex)
 {
