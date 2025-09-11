@@ -1,14 +1,9 @@
 using Application.Activities.Commands;
 using Application.Activities.DTO;
 using Application.Activities.Queries;
-using Application.Core;
 using Domain;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
+
 
 namespace API.Controllers
 {
@@ -21,10 +16,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActvityDetail(string id)
+        public async Task<ActionResult<ActivityDto>> GetActvityDetail(string id)
         {
             return HandleResult(await Mediator.Send(new GetActivityDetails.Query { Id = id }));
-
         }
 
         [HttpPost]

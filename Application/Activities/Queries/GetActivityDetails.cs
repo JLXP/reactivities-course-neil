@@ -1,5 +1,7 @@
 using System;
+using Application.Activities.DTO;
 using Application.Core;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +12,23 @@ namespace Application.Activities.Queries;
 public class GetActivityDetails
 {
 
-    public class Query : IRequest<Result<Activity>>
+    public class Query : IRequest<Result<ActivityDto>>
     {
         public required string Id { get; set; }
     }
 
-    public class Handler : IRequestHandler<Query, Result<Activity>>
+    public class Handler : IRequestHandler<Query, Result<ActivityDto>>
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public Handler(AppDbContext context)
+        public Handler(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<Result<Activity>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
         {
             var activity = await _context.Activities
             .Include(x => x.Attendees)
@@ -32,7 +36,7 @@ public class GetActivityDetails
             .FirstOrDefaultAsync(x => request.Id == x.Id, cancellationToken);
 
             if (activity == null) Result<Activity>.Failure("Activity not found", 404);
-            return Result<Activity>.Success(activity!);
+            return Result<ActivityDto>.Success(_mapper.Map<ActivityDto>(activity));
         }
     }
 
