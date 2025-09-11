@@ -2,6 +2,7 @@ using System;
 using Application.Activities.DTO;
 using Application.Core;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -31,12 +32,11 @@ public class GetActivityDetails
         public async Task<Result<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
         {
             var activity = await _context.Activities
-            .Include(x => x.Attendees)
-            .ThenInclude(x => x.User)
+            .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(x => request.Id == x.Id, cancellationToken);
 
-            if (activity == null) Result<Activity>.Failure("Activity not found", 404);
-            return Result<ActivityDto>.Success(_mapper.Map<ActivityDto>(activity));
+            if (activity == null) return Result<ActivityDto>.Failure("Activity not found", 404);
+            return Result<ActivityDto>.Success(activity);
         }
     }
 
