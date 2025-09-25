@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Domain;
 
@@ -13,5 +14,6 @@ public class Photo
 
     public required string UserId { get; set; }
 
+    [JsonIgnore]
     public User User { get; set; } = null!;
 }
