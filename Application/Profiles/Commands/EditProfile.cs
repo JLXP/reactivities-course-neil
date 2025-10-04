@@ -2,6 +2,7 @@ using System;
 using Application.Core;
 using Application.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Profiles.Commands;
@@ -24,6 +25,8 @@ public class EditProfile
 
             user.DisplayName = request.DisplayName;
             user.Bio = request.Bio;
+
+            context.Entry(user).State = EntityState.Modified;
 
             var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
