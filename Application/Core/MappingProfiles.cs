@@ -10,6 +10,7 @@ public class MappingProfiles : Profile
 
     public MappingProfiles()
     {
+        string? currentUserId = null;
         CreateMap<Activity, Activity>();
         CreateMap<CreateActivityDTO, Activity>();
         CreateMap<EditActivityDto, Activity>();
