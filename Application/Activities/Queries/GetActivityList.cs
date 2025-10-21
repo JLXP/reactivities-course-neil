@@ -63,10 +63,17 @@ public class GetActivityList
             .ToListAsync(cancellationToken);
 
             DateTime? nextCursor = null;
-            if(activities.Count > request.PageSize)
+            if (activities.Count > request.PageSize)
             {
                 nextCursor = activities.Last().Date;
+                activities.RemoveAt(activities.Count - 1);
             }
+
+            return Result<PagedList<ActivityDto, DateTime?>>.Success(
+                new PagedList<ActivityDto, DateTime?>{}
+
+            );
+            
         }
     }
 }
