@@ -12,17 +12,10 @@ namespace Application.Activities.Queries;
 
 public class GetActivityList
 {
-    private const int MaxPageSize = 50;
 
     public class Query : IRequest<Result<PagedList<ActivityDto, DateTime?>>>
     {
-        public DateTime? Cursor { get; set; }
-        private int _pageSize;
-        public int PageSize
-        {
-            get => _pageSize;
-            set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
-        }
+        public required ActivityParams Params { get; set; }
 
     }
 
@@ -33,7 +26,7 @@ public class GetActivityList
         private readonly IMapper _mapper;
         private readonly IUserAccessor _userAccessor;
 
-        
+
 
 
         public Handler(AppDbContext context, ILogger<GetActivityList> logger, IMapper mapper, IUserAccessor userAccessor)
@@ -49,31 +42,39 @@ public class GetActivityList
 
             var query = _context.Activities
                 .OrderBy(x => x.Date)
+                .Where(x => x.Date >= (request.Params.Cursor ?? request.Params.StartDate))
                 .AsQueryable();
 
-            if (request.Cursor.HasValue)
+            if (!string.IsNullOrEmpty(request.Params.Filter))
             {
-                query = query.Where(x => x.Date >= request.Cursor.Value);
+                query = request.Params.Filter switch
+                {
+                    "isGoing" => query.Where(x => x.Attendees.Any(a => a.UserId == _userAccessor.GetUserId())),
+                    "isHost" => query.Where(x => x.Attendees.Any(a => a.IsHost && a.UserId == _userAccessor.GetUserId())),
+                    _ => query
+                };
             }
 
+            var projectedActivities = query.ProjectTo<ActivityDto>(_mapper.ConfigurationProvider,
+                new { currentUserId = _userAccessor.GetUserId() });
+
+
             var activities = await _context.Activities
-            .Take(request.PageSize + 1)
-            .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider,
-                new { currentUserId = _userAccessor.GetUserId() })
+            .Take(request.Params.PageSize + 1)
             .ToListAsync(cancellationToken);
 
             DateTime? nextCursor = null;
-            if (activities.Count > request.PageSize)
+            if (activities.Count > request.Params.PageSize)
             {
                 nextCursor = activities.Last().Date;
                 activities.RemoveAt(activities.Count - 1);
             }
 
             return Result<PagedList<ActivityDto, DateTime?>>.Success(
-                new PagedList<ActivityDto, DateTime?>{}
+                new PagedList<ActivityDto, DateTime?> { }
 
             );
-            
+
         }
     }
 }
