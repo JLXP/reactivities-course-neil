@@ -59,7 +59,7 @@ public class GetActivityList
                 new { currentUserId = _userAccessor.GetUserId() });
 
 
-            var activities = await _context.Activities
+            var activities = await projectedActivities
             .Take(request.Params.PageSize + 1)
             .ToListAsync(cancellationToken);
 
@@ -71,7 +71,11 @@ public class GetActivityList
             }
 
             return Result<PagedList<ActivityDto, DateTime?>>.Success(
-                new PagedList<ActivityDto, DateTime?> { }
+                new PagedList<ActivityDto, DateTime?>
+                {
+                    Items = activities,
+                    NextCursor = nextCursor
+                }
 
             );
 

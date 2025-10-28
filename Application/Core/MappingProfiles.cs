@@ -24,10 +24,10 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Id, o => o.MapFrom(s => s.User.Id))
             .ForMember(d => d.Following, o => o.MapFrom(s => s.User.Followers.Any(x => x.Observer.Id == currentUserId)))
             .ForMember(d => d.FollowerCount, o => o.MapFrom(s => s.User.Followers.Count))
-            .ForMember(d => d.Following, o => o.MapFrom(s => s.User.Followings.Count));
+            .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.User.Followings.Count));
         CreateMap<User, UserProfile>()
             .ForMember(d => d.FollowerCount, o => o.MapFrom(s => s.Followers.Count))
-            .ForMember(d => d.Following, o => o.MapFrom(s => s.Followings.Count))
+            .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.Followings.Count))
             .ForMember(d=>d.Following, o => o.MapFrom(s => s.Followers.Any(x => x.Observer.Id == currentUserId)));
         CreateMap<Comment, CommentDto>()
             .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.User.DisplayName))
