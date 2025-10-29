@@ -84,6 +84,7 @@ app.UseStaticFiles();
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<User>();
 app.MapHub<CommentHub>("/comments");
+app.MapFallbackToController("Index", "Fallback");
 /*
 
 CreateScope() → es como decir:
