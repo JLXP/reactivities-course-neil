@@ -9,6 +9,7 @@ public class FallbackController: Controller
     [AllowAnonymous]
     public IActionResult Index()
     {
+        //funcion para crear el file
         return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "index.html"),"text/HTML");
     }
 
