@@ -1,3 +1,4 @@
+version: "3.9"
 services:
   sql-server:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -8,6 +9,6 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "Password@1"
     volumes:
-      -sql-data: /var/opt/mssql
-  volumes:
+      - sql-data:/var/opt/mssql
+volumes:
   sql-data:
