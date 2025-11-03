@@ -5,6 +5,7 @@ namespace API.DTOs;
 
 public class RegisterDto
 {
+    //Datos requeridos para el registro de un nuevo usuario
     [Required]
     public string DisplayName { get; set; } = "";
     [Required]
